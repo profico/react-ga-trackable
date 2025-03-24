@@ -2,7 +2,6 @@ import React, { createContext, useContext } from 'react';
 
 interface TrackingContextValues {
   propNameConverter: (prop: string) => string;
-  uaPrefix: string;
   gaPrefix: string;
 }
 
@@ -19,7 +18,6 @@ const kebabize = (str: string) =>
     .toLowerCase();
 
 const TrackingContext = createContext<TrackingContextValues>({
-  uaPrefix: '',
   gaPrefix: '',
   propNameConverter: kebabize,
 });
@@ -28,11 +26,10 @@ export const useTrackingCtx = () => useContext(TrackingContext);
 
 export const TrackingProvider: React.FC<TrackingProviderProps> = ({
   children,
-  uaPrefix = '',
   gaPrefix = '',
   propNameConverter = kebabize,
 }) => (
-  <TrackingContext.Provider value={{ uaPrefix, gaPrefix, propNameConverter }}>
+  <TrackingContext.Provider value={{ gaPrefix, propNameConverter }}>
     {children}
   </TrackingContext.Provider>
 );

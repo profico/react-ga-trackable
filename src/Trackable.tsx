@@ -5,17 +5,14 @@ import { useTrackingCtx } from './TrackingContext';
 type TrackableBaseValues = Record<string, any>;
 
 type TrackableProps<
-  UAType extends TrackableBaseValues = TrackableBaseValues,
   GAType extends TrackableBaseValues = TrackableBaseValues
 > = {
   children: React.ReactNode;
-  ua?: UAType;
   ga?: GAType;
   component?: React.ReactElement | React.ElementType;
 };
 
 type MergedPropsType = {
-  uaProps: TrackableBaseValues;
   gaProps: TrackableBaseValues;
 };
 
@@ -35,52 +32,40 @@ const reducePropsWithPrefix = (
     {}
   );
 
-function Trackable<
-  UAType extends TrackableBaseValues = TrackableBaseValues,
-  GAType extends TrackableBaseValues = TrackableBaseValues
->({
+function Trackable<GAType extends TrackableBaseValues = TrackableBaseValues>({
   component: ReplacementComponent,
   ga,
-  ua,
   children,
-}: TrackableProps<UAType, GAType>) {
+}: TrackableProps<GAType>) {
   const trackingCtx = useTrackingCtx();
 
-  const { uaProps, gaProps } = useMemo<MergedPropsType>(() => {
+  const { gaProps } = useMemo<MergedPropsType>(() => {
     if (!trackingCtx) {
       throw new Error(
         'Make sure you have wrapped your app with `TrackingProvider`.'
       );
     }
 
-    const { uaPrefix, gaPrefix, propNameConverter } = trackingCtx;
+    const { gaPrefix, propNameConverter } = trackingCtx;
 
-    const baseUaProps = ua || {};
     const baseGaProps = ga || {};
 
-    const trimmedUaPrefix = getTrimmedPrefix(uaPrefix);
     const trimmedGaPrefix = getTrimmedPrefix(gaPrefix);
 
     return {
-      uaProps: reducePropsWithPrefix(
-        baseUaProps,
-        trimmedUaPrefix,
-        propNameConverter
-      ),
       gaProps: reducePropsWithPrefix(
         baseGaProps,
         trimmedGaPrefix,
         propNameConverter
       ),
     };
-  }, [ua, ga, trackingCtx]);
+  }, [ga, trackingCtx]);
 
   if (ReplacementComponent) {
     if (typeof ReplacementComponent === 'string') {
       return React.createElement(
         ReplacementComponent,
         {
-          ...uaProps,
           ...gaProps,
         },
         [children]
@@ -92,7 +77,6 @@ function Trackable<
     }
 
     return React.cloneElement(ReplacementComponent, {
-      ...uaProps,
       ...gaProps,
     });
   }
@@ -106,7 +90,6 @@ function Trackable<
 
         if (index === 0) {
           return React.cloneElement(child, {
-            ...uaProps,
             ...gaProps,
           });
         }

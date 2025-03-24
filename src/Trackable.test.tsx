@@ -52,25 +52,6 @@ describe('Trackable [component] ->', () => {
     ReactDOM.unmountComponentAtNode(rootEl);
   });
 
-  it('should pass down the Universal Analytics props (with no prefix)', () => {
-    ReactDOM.render(
-      <TrackingProvider>
-        <Trackable ua={{ name: 'Name prop' }}>
-          <div>Universal Analytics</div>
-        </Trackable>
-      </TrackingProvider>,
-      rootEl
-    );
-
-    const [element] = Array.from(rootEl.children);
-    const attributeNames = element.getAttributeNames();
-
-    expect(attributeNames.includes('data-name')).toBe(true);
-    expect(element.getAttribute('data-name')).toBe('Name prop');
-
-    ReactDOM.unmountComponentAtNode(rootEl);
-  });
-
   it('should pass down the Google Analytics props (with no prefix)', () => {
     ReactDOM.render(
       <TrackingProvider>
@@ -90,46 +71,6 @@ describe('Trackable [component] ->', () => {
     ReactDOM.unmountComponentAtNode(rootEl);
   });
 
-  it('should pass down both Google and Universal Analytics props (with no prefix)', () => {
-    ReactDOM.render(
-      <TrackingProvider>
-        <Trackable ga={{ google: 'Newer' }} ua={{ universal: 'Older' }}>
-          <div>Google and Universal Analytics</div>
-        </Trackable>
-      </TrackingProvider>,
-      rootEl
-    );
-
-    const [element] = Array.from(rootEl.children);
-    const attributeNames = element.getAttributeNames();
-
-    expect(attributeNames.includes('data-google')).toBe(true);
-    expect(attributeNames.includes('data-universal')).toBe(true);
-    expect(element.getAttribute('data-google')).toBe('Newer');
-    expect(element.getAttribute('data-universal')).toBe('Older');
-
-    ReactDOM.unmountComponentAtNode(rootEl);
-  });
-
-  it('should pass down the Universal Analytics props (with `ua` prefix)', () => {
-    ReactDOM.render(
-      <TrackingProvider uaPrefix="ua">
-        <Trackable ua={{ name: 'Name prop' }}>
-          <div>Universal Analytics</div>
-        </Trackable>
-      </TrackingProvider>,
-      rootEl
-    );
-
-    const [element] = Array.from(rootEl.children);
-    const attributeNames = element.getAttributeNames();
-
-    expect(attributeNames.includes('data-ua-name')).toBe(true);
-    expect(element.getAttribute('data-ua-name')).toBe('Name prop');
-
-    ReactDOM.unmountComponentAtNode(rootEl);
-  });
-
   it('should pass down the Google Analytics props (with `ga` prefix)', () => {
     ReactDOM.render(
       <TrackingProvider gaPrefix="ga">
@@ -145,43 +86,6 @@ describe('Trackable [component] ->', () => {
 
     expect(attributeNames.includes('data-ga-name')).toBe(true);
     expect(element.getAttribute('data-ga-name')).toBe('Name prop');
-
-    ReactDOM.unmountComponentAtNode(rootEl);
-  });
-
-  it('should pass down the Universal Analytics props (with `ua` prefix and different naming conventions)', () => {
-    const uaPrefix = 'ua';
-    const requiredAttributesDict = getRequiredAttributesDict(uaPrefix);
-
-    ReactDOM.render(
-      <TrackingProvider uaPrefix={uaPrefix}>
-        <Trackable
-          ua={{
-            regular: requiredAttributesDict['data-ua-regular'],
-            camelCase: requiredAttributesDict['data-ua-camel-case'],
-            snake_case: requiredAttributesDict['data-ua-snake-case'],
-            'kebab-case': requiredAttributesDict['data-ua-kebab-case'],
-          }}
-        >
-          <div>Universal Analytics</div>
-        </Trackable>
-      </TrackingProvider>,
-      rootEl
-    );
-
-    const [element] = Array.from(rootEl.children);
-    const attributeNames = element.getAttributeNames();
-
-    expect(
-      Object.keys(requiredAttributesDict).every(propName =>
-        attributeNames.includes(propName)
-      )
-    ).toBe(true);
-    expect(
-      Object.entries(requiredAttributesDict).every(
-        ([propName, value]) => element.getAttribute(propName) === value
-      )
-    ).toBe(true);
 
     ReactDOM.unmountComponentAtNode(rootEl);
   });
