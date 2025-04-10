@@ -23,14 +23,13 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test --passWithNoTests",
-    "test:watch": "yarn test --watchAll",
-    "test:coverage": "yarn test --coverage",
+    "test:watch": "pnpm test --watchAll",
+    "test:coverage": "pnpm test --coverage",
     "lint": "tsdx lint",
     "prepare": "husky install && tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
-  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -55,6 +54,7 @@
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^7.0.5",
+    "@types/jest": "^29.5.14",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
     "husky": "^7.0.4",
